@@ -17,13 +17,14 @@ class BaseProbPath(ABC):
     @abstractmethod
     def sample(self,x_0:jax.Array, x_1:jax.Array, t: jax.Array, *, key) -> PathSample:
         """
-            X_0 X_1 \sim \pi(X_0,X_1)
+           TODO: add doc
         """
-
-    def assert_sample_shape(self, x_0: jax.Array, x_1: jax.Array, t: jax.Array):
-        assert (
-            t.ndim == 1
-        )
-        assert (
-            t.shape[0] == x_0.shape[0] == x_1.shape[0]
-        )
+    ...
+    # not useful for jax code ?
+    # def assert_sample_shape(self, x_0: jax.Array, x_1: jax.Array, t: jax.Array):
+    #     assert (
+    #         t.ndim == 1
+    #     )
+    #     assert (
+    #         t.shape[0] == x_0.shape[0] == x_1.shape[0]
+    #     )
