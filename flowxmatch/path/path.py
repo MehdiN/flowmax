@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import jax
-from path_sample import PathSample
+from .path_sample import PathSample
 
 class BaseProbPath(ABC):
 

@@ -1,6 +1,6 @@
-from scheduler.scheduler import Scheduler, CondOTScheduler
-from src.path import BaseProbPath
-from src.path import PathSample
+from .scheduler.scheduler import Scheduler, CondOTScheduler
+from .path import BaseProbPath
+from .path_sample import PathSample
 from jaxtyping import Array
 
 
