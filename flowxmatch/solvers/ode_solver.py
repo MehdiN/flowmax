@@ -39,7 +39,7 @@ class ODESolver:
             return self.velocity_model(x=x, t=t, **kwargs)
 
         assert self.solver is not None
-
+        # check if t0 and t1 are included in the timegrid ?
         saveat = dfx.SaveAt(t0=True,t1=True,ts=timegrid)
         term = dfx.ODETerm(ode_wrapper)
         x0 = jxr.normal(key, x_init.shape)
