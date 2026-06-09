@@ -50,11 +50,11 @@ class ODESolver:
         else:
             return sol.ys[0]
 
-    def _tree_flatten(self):
+    def tree_flatten(self):
         children = ()
         aux_data = {"velocity_model": self.velocity_model,"solver":self.solver}
         return (children, aux_data)
 
     @classmethod
-    def _tree_unflatten(cls, aux_data, children):
+    def tree_unflatten(cls, aux_data, children):
         return cls(*children,**aux_data)
