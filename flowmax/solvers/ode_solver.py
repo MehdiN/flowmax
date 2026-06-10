@@ -13,6 +13,11 @@ from .solver import Solver
 class ODESolver:
 
     def __init__(self, velocity_model: Callable,method='tsit5') -> None:
+        """
+            TODO: usage doc
+            maybe pass the dfx solver as an argument and 
+            use TsiT5 as default if None
+        """
         super().__init__()
         self.velocity_model = velocity_model
         if method == "euler":
@@ -22,8 +27,8 @@ class ODESolver:
         elif method == "tsit5":
             self.solver = dfx.Tsit5()
         else:
-            self.solver = None
-            raise NotImplementedType("Solver not available")
+            self.solver = dfx.Euler()
+            print("Solver not found, revert to Euler solver")
 
     @eqx.filter_jit
     def sample(
