@@ -4,7 +4,6 @@ from typing import Union
 from jaxtyping import Array
 import jax
 import jax.numpy as jnp
-from numpy import ones_like
 
 @jax.tree_util.register_dataclass
 @dataclass
@@ -15,6 +14,7 @@ class SchedulerOutput:
     d_alpha_t: Array
     d_sigma_t: Array
 
+@jax.tree_util.register_pytree_node_class
 class Scheduler(ABC):
     """
         Base class
@@ -34,6 +34,15 @@ class Scheduler(ABC):
         """
             TODO
         """
+
+    def tree_flatten(self):
+        children = None
+        aux_data = None
+        return (children, aux_data)
+
+    @classmethod
+    def tree_unflatten(cls, aux_data, children):
+        return cls(*children,**aux_data)    
 
 
 class ConvexScheduler(Scheduler):
