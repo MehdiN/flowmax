@@ -94,7 +94,7 @@ if __name__=="__main__":
     lr = 0.001
     data_size = 4096
     batch_size = 64
-    epochs = 2000
+    epochs = 1000
     print_every = 100 
     hidden_dim = 512
 
@@ -144,7 +144,7 @@ if __name__=="__main__":
     
     # we select a solver from diffrax
     solver = dfx.Tsit5()
-    ode_solver = ODESolver(solver=solver)
+    ode_solver = ODESolver(backend=solver)
     # our initial data from N(0,I)
     x_init = jxr.normal(key,(data_size, 2))
     # sample from the model
