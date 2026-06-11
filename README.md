@@ -5,7 +5,6 @@
 **Flow Matching with JAX and Equinox**
 
 
-
 [![Version 0.1.0](https://img.shields.io/badge/version-0.1.0-orange.svg)]()
 
 </div>
@@ -61,7 +60,7 @@ For how to use the library, see the [`examples/`](examples/) directory.
 ## TODO
 
 - [x] Add likelihood computation
-- [ ] Add comprehensive documentation
+- [ ] Add documentation
 - [ ] Add Jupyter notebook examples
 - [ ] Variance Preserving Schedulers
 - [ ] Geodesic and Mixture Probability Paths
