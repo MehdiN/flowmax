@@ -229,4 +229,3 @@ if __name__=="__main__":
 
     fig.colorbar(cm.ScalarMappable(norm=norm, cmap='viridis'), ax=axs, orientation='horizontal', label='density')
     plt.show()
-

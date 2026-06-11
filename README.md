@@ -15,7 +15,8 @@ Dependencies:
 - `jax >= 0.9.2`
 - `equinox` for the neural network library
 - `diffrax` for ODE solvers
-- `optax` for optimization
+- `optax` for the optimization library
+- `einops`
 - `jaxtyping`
 
 ## Usage exemples
@@ -24,13 +25,14 @@ check the examples in `examples/`
 
 ## TODO
 
-- [ ] Add likelihood computation
+- [x] Add likelihood computation
 - [ ] Add documentation
-- [ ] Add more exemples
+- [ ] Add more examples
 - [ ] Variance Preserving Schedulers
 - [ ] Geodesic and Mixture Probability Paths
 - [ ] Solvers for non Euclidian spaces
 - [ ] Discrete Flow Matching
+- [ ] Optimize jax and equinox routine
 
 ## Reference
 
