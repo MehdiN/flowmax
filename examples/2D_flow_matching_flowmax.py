@@ -7,6 +7,7 @@ import equinox as eqx
 import equinox.nn as enn
 import diffrax as dfx
 import optax
+import distrax as dtx
 import time
 
 # flow matching utilities
@@ -134,7 +135,8 @@ if __name__=="__main__":
     print("Sample from trained model")
 
     # we pass our model in inference mode
-    velocity_model = enn.inference_mode(model)
+    # velocity_model = enn.inference_mode(model)
+    velocity_model = model
     
     # inference parameters
     step_size = 0.05
@@ -165,5 +167,66 @@ if __name__=="__main__":
         axs[i].set_title('t= %.2f' % (timegrid[i]))
         
     fig.tight_layout()
+    # plt.show()
+
+    ### Compute log-likelihood
+    print("Compute the likelihood")
+
+    gaussian = dtx.Independent(dtx.Normal(loc=jnp.zeros(2), scale=jnp.ones(2)),1)
+    logp = lambda x: gaussian.log_prob(x)
+
+    timegrid = jnp.array([1., 0.])
+    
+    grid_size = 100
+    x_1 = jnp.meshgrid(jnp.linspace(-5,5,grid_size),jnp.linspace(-5,5,grid_size))
+    x_1 = jnp.stack([x_1[0].flatten(), x_1[1].flatten()],axis=1)
+
+    key = jxr.key(67)
+
+    num_acc = 10
+    log_p_acc = 0
+    # maybe scan this
+    for i in range(num_acc):
+        key, subkey = jxr.split(key)
+        _, log_p = ode_solver.compute_likelihood(
+                                            velocity_model,
+                                            x_1=x_1,
+                                            log_p0=logp,
+                                            step_size=step_size,
+                                            timegrid=timegrid,
+                                            exact_divergence=False,
+                                            return_intermediates=False,
+                                            key=subkey)
+        log_p_acc += log_p
+
+    log_p_acc = log_p_acc / num_acc
+
+    _, log_p = ode_solver.compute_likelihood(
+                                    velocity_model,
+                                    x_1=x_1,
+                                    log_p0=logp,
+                                    step_size=step_size,
+                                    timegrid=timegrid,
+                                    exact_divergence=True,
+                                    return_intermediates=False,
+                                    key=key)
+
+
+    likelihood = jnp.exp(log_p_acc).reshape(grid_size, grid_size)
+    exact_likelihood = jnp.exp(log_p).reshape(grid_size, grid_size)
+
+    fig, axs = plt.subplots(1,2,figsize=(10,10))
+    cmin = 0.0
+    cmax = 1/32 # 1/32 is the gt likelihood value
+
+    norm = cm.colors.Normalize(vmax=cmax, vmin=cmin)
+
+    axs[0].imshow(likelihood, extent=(-5, 5, -5, 5), origin='lower', cmap='viridis', norm=norm)
+    axs[0].set_title('Model Likelihood, Hutchinson Estimator, #acc=%d' % num_acc)
+
+    axs[1].imshow(exact_likelihood, extent=(-5, 5, -5, 5), origin='lower', cmap='viridis', norm=norm)
+    axs[1].set_title('Exact Model Likelihood')
+
+    fig.colorbar(cm.ScalarMappable(norm=norm, cmap='viridis'), ax=axs, orientation='horizontal', label='density')
     plt.show()
 
