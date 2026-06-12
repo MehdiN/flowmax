@@ -140,7 +140,7 @@ class ODESolver:
     
     def compute_likelihood(
         self,
-        velocity_model,
+        velocity_model: Callable,
         x_1: Array,
         log_p0: Callable,
         step_size: float | None,
@@ -154,7 +154,8 @@ class ODESolver:
         key
         ):
         # We solve the ODE from 1 to 0
-        assert timegrid[0] == 1. and timegrid[-1] == 0.
+        # assert non jittable, trust the user for correct timegrid
+        # assert timegrid[0] == 1. and timegrid[-1] == 0
         
         if return_intermediates:
             saveat = dfx.SaveAt(ts=timegrid)

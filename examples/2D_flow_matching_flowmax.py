@@ -184,21 +184,28 @@ if __name__=="__main__":
     key = jxr.key(67)
 
     num_acc = 10
-    log_p_acc = 0
-    # maybe scan this
-    for i in range(num_acc):
-        key, subkey = jxr.split(key)
-        _, log_p = ode_solver.compute_likelihood(
-                                            velocity_model,
-                                            x_1=x_1,
-                                            log_p0=logp,
-                                            step_size=step_size,
-                                            timegrid=timegrid,
-                                            exact_divergence=False,
-                                            return_intermediates=False,
-                                            key=subkey)
-        log_p_acc += log_p
 
+    def likelihood_step(carry, _):
+        key, log_p_acc = carry
+        key, subkey = jxr.split(key, 2)
+        _, log_p = ode_solver.compute_likelihood(
+            velocity_model,
+            x_1=x_1,
+            log_p0=logp,
+            step_size=step_size,
+            timegrid=timegrid,
+            exact_divergence=False,
+            return_intermediates=False,
+            key=subkey
+        )
+        return (key, log_p_acc + log_p), log_p
+
+    (final_key, log_p_acc), _ = lax.scan(
+        likelihood_step,
+        (key, jnp.zeros(x_1.shape[0])),
+        None,
+        length=num_acc
+    )
     log_p_acc = log_p_acc / num_acc
 
     _, log_p = ode_solver.compute_likelihood(
