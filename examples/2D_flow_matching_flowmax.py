@@ -1,4 +1,5 @@
 import jax
+from jax import lax
 import jax.numpy as jnp
 import jax.nn as jnn
 import jax.random as jxr
