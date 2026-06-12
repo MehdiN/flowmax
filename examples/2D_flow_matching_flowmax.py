@@ -145,7 +145,7 @@ if __name__=="__main__":
     timegrid = jnp.linspace(0,1, t_steps)
     
     # we select a solver from diffrax
-    solver = dfx.Tsit5()
+    solver = dfx.Midpoint()
     ode_solver = ODESolver(backend=solver)
     # our initial data from N(0,I)
     x_init = jxr.normal(key,(data_size, 2))
