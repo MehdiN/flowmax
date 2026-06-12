@@ -8,7 +8,6 @@ from einops import rearrange
 from jaxtyping import Array, PRNGKeyArray
 from typing import Callable, Sequence, Union
 from jax.tree_util import register_pytree_node_class
-from .solver import Solver
 
 @register_pytree_node_class
 class ODESolver:
