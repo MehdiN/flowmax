@@ -62,7 +62,7 @@ For how to use the library, see the [`examples/`](examples/) directory.
 - [x] Add likelihood computation
 - [ ] Add documentation
 - [ ] Add Jupyter notebook examples
-- [ ] Variance Preserving Schedulers
+- [x] Variance Preserving Schedulers
 - [ ] Geodesic and Mixture Probability Paths
 - [ ] Solvers for non-Euclidean spaces
 - [ ] Discrete Flow Matching

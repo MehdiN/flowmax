@@ -28,12 +28,14 @@ class Scheduler(ABC):
         Returns:
             SchedulerOutput
         """
+        ...
 
     @abstractmethod
     def snr_inverse(self, snr: Array)->Array:
         """
             TODO
         """
+        ...
 
     def tree_flatten(self):
         children = None
@@ -51,12 +53,14 @@ class ConvexScheduler(Scheduler):
         """
             TODO
         """
+        ...
 
     @abstractmethod
     def kappa_inverse(self, kappa: Array)->Array:
         """
             TODO
         """
+        ...
 
     def snr_inverse(self, snr: Array)->Array:
         kappa_t = snr / (1.0 + snr)
