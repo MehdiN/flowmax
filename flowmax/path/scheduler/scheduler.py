@@ -121,3 +121,58 @@ class CosineScheduler(Scheduler):
 
     def snr_inverse(self, snr: Array) -> Array:
         return 2.0 * jnp.atan(snr) / jnp.pi
+
+
+class VPScheduler(Scheduler):
+    bate_min: float
+    beta_max: float
+
+    """
+        Variance Preserving Scheduler
+        
+        Args:
+         beta_min: float
+         beta_max: float
+    """
+
+    def __init__(self, beta_min: float = 0.1, beta_max:float = 20.)->None:
+        self.beta_min = beta_min
+        self.beta_max = beta_max
+
+
+    def __call__(self, t: Array) -> SchedulerOutput:
+        b = self.beta_min
+        B = self.beta_max
+        T = 0.5 * (1 - t) ** 2 * (B - b) + (1 - t) * b
+        dT = - (1-t) * (B - b) - b
+
+        return SchedulerOutput(
+            alpha_t=jnp.exp(- 0.5 * T),
+            sigma_t = jnp.sqrt( 1 - jnp.exp(-0.5 * T)),
+            d_alpha_t= - 0.5 * dT * jnp.exp(-0.5 * T),
+            d_sigma_t= 0.5 * dT * jnp.exp(-T) / jnp.sqrt(1 - jnp.exp(-T))
+        )
+
+    def snr_inverse(self, snr: Array) -> Array:
+        T = - jnp.log(snr ** 2 / (snr ** 2 + 1))
+        b = self.beta_min
+        B = self.beta_max
+        t = 1 - ((-b + jnp.sqrt(b**2 + 2 * (B - b) * T)) / (B - b))
+        return t
+
+class LinearVPScheduler(Scheduler):
+    
+    """
+        Linear Variance Preserving Scheduler
+    """
+
+    def __call__(self, t: Array) -> SchedulerOutput:
+        return SchedulerOutput(
+            alpha_t = t,
+            sigma_t = jnp.sqrt(1 - t**2),
+            d_alpha_t = jnp.ones_like(t),
+            d_sigma_t = - t / jnp.sqrt(1 - t ** 2)
+        )
+
+    def snr_inverse(self, snr: Array) -> Array:
+        return jnp.sqrt(snr**2 / (1 + snr**2))
