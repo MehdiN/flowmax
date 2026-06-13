@@ -79,6 +79,32 @@ class CondOTScheduler(ConvexScheduler):
     def kappa_inverse(self, kappa: Array) -> Array:
         return kappa
 
+class PolynomialConvexScheduler(ConvexScheduler):
+    n: float | int
+    
+    """
+        Polynomial Scheduler
+
+        Args:
+        n: Scalar-like, polynomial power must be > 0
+    
+    """
+
+    def __init__(self, n: float | int) -> None:
+
+        self.n = n
+
+    def __call__(self, t: Array) -> SchedulerOutput:
+        return SchedulerOutput(
+            alpha_t= t ** self.n,
+            sigma_t= 1 - t ** self.n,
+            d_alpha_t= self.n * (t ** (self.n - 1)),
+            d_sigma_t= - self.n * (t ** (self.n - 1)),
+        )
+
+    def kappa_inverse(self, kappa: Array) -> Array:
+        return jnp.pow(kappa, 1.0 / self.n)
+
 
 class CosineScheduler(Scheduler):
     """
